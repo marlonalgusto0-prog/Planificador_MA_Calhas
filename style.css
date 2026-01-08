@@ -1,1 +1,27 @@
+:root {
+    --primary-color: #4A90E2;
+    --bg-color: #f5f7fa;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --border-color: #ddd;
+}
+
+body { font-family: sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; }
+.app-container { width: 100%; max-width: 500px; background: var(--card-bg); min-height: 100vh; }
+header { padding: 20px; border-bottom: 1px solid var(--border-color); }
+.tabs { display: flex; gap: 5px; margin-top: 10px; }
+.tabs button { flex: 1; padding: 10px; border: none; background: #eee; cursor: pointer; border-radius: 4px; }
+.tabs button.active { background: var(--primary-color); color: white; }
+
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+.input-group { border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; display: flex; flex-direction: column; }
+.input-group label { font-size: 0.75rem; color: #666; font-weight: bold; }
+.input-group input { border: none; font-size: 1.1rem; outline: none; padding-top: 5px; }
+
+.btn-calculate { width: calc(100% - 40px); margin: 0 20px; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+.result-container { padding: 20px; text-align: center; }
+.svg-area { width: 100%; height: auto; background: white; border: 1px solid #eee; margin: 15px 0; padding: 10px; box-sizing: border-box; }
+.numerical-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; font-family: monospace; background: #f9f9f9; padding: 15px; border-radius: 8px; }
+.res-item { font-size: 0.9rem; margin: 2px 0; }
 
