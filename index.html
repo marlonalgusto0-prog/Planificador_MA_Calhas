@@ -3,69 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculador de Caldeiraria</title>
+    <title>Planificador Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body data-mode="curva">
-    <div class="app-container">
+<body>
+    <div id="home-screen" class="container">
         <header>
-            <nav class="tabs">
-                <button onclick="switchTab('curva')" id="btn-curva" class="active">Curva</button>
-                <button onclick="switchTab('cotovelo')" id="btn-cotovelo">Cotovelo</button>
-                <button onclick="switchTab('boca')" id="btn-boca">Boca de Lobo</button>
-            </nav>
-            <h1 id="app-title">Curva de Gomos</h1>
+            <h1>Planificador</h1>
         </header>
 
-        <main>
-            <div class="diagram-container" id="main-diagram">
+        <section class="category">
+            <h2>Gratuitos</h2>
+            <div class="grid">
+                <div class="card" onclick="openCalc('boca')">
+                    <div class="icon-box"><img src="https://img.icons8.com/fluency/96/pipe.png" alt="Boca de Lobo"></div>
+                    <span>Boca de Lobo</span>
                 </div>
-
-            <div class="input-grid">
-                <div class="input-group">
-                    <label>D (Diâm. Maior)</label>
-                    <input type="number" id="val-D" placeholder="0.00">
-                </div>
-                <div class="input-group" id="group-d">
-                    <label>d (Diâm. Menor)</label>
-                    <input type="number" id="val-d" placeholder="0.00">
-                </div>
-                <div class="input-group" id="group-R">
-                    <label>R (Raio Curva)</label>
-                    <input type="number" id="val-R" placeholder="0.00">
-                </div>
-                <div class="input-group" id="group-h">
-                    <label>h (Altura)</label>
-                    <input type="number" id="val-h" placeholder="0.00">
-                </div>
-                <div class="input-group" id="group-a">
-                    <label>α (Ângulo)</label>
-                    <input type="number" id="val-a" placeholder="0°">
-                </div>
-                <div class="input-group">
-                    <label>E (Espessura)</label>
-                    <input type="number" id="val-E" placeholder="0.00">
-                </div>
-                <div class="input-group" id="group-gomos">
-                    <label>Nº de Gomos</label>
-                    <input type="number" id="val-gomos" placeholder="Qtd">
-                </div>
-                <div class="input-group">
-                    <label>Nº Divisões</label>
-                    <input type="number" id="val-div" value="12">
+                <div class="card" onclick="openCalc('flange')">
+                    <div class="icon-box"><img src="https://img.icons8.com/fluency/96/gear.png" alt="Flange"></div>
+                    <span>Furação de Flange</span>
                 </div>
             </div>
+        </section>
 
-            <button class="btn-calculate" onclick="calcular()">CALCULAR</button>
-
-            <div id="result-section" style="display: none;">
-                <hr>
-                <h3>Planificação</h3>
-                <div id="plan-visual" class="plan-svg"></div>
-                <div id="results-table" class="results-grid"></div>
+        <section class="category">
+            <h2>Curvas</h2>
+            <div class="grid">
+                <div class="card" onclick="openCalc('curva')">
+                    <div class="icon-box"><img src="https://img.icons8.com/fluency/96/plumbing.png" alt="Curva de Gomos"></div>
+                    <span>Curva de Gomos</span>
+                </div>
+                <div class="card" onclick="openCalc('cotovelo')">
+                    <div class="icon-box"><img src="https://img.icons8.com/fluency/96/pipeline.png" alt="Cotovelo"></div>
+                    <span>Cotovelo</span>
+                </div>
             </div>
-        </main>
+        </section>
     </div>
+
+    <div id="calc-screen" class="container" style="display:none;">
+        <div class="nav-back">
+            <button onclick="goBack()">← Voltar</button>
+            <h2 id="calc-title">Boca de Lobo</h2>
+        </div>
+
+        <div class="diagram-area" id="diagram-view">
+            </div>
+
+        <div class="input-grid" id="inputs-container">
+            </div>
+
+        <button class="btn-main" onclick="processarCalculo()">CALCULAR</button>
+
+        <div id="result-area" class="result-area"></div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
