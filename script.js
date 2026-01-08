@@ -1,92 +1,91 @@
-let currentMode = 'boca';
+const diagrams = {
+    curva: `<svg viewBox="0 0 200 150" width="180"><path d="M40,130 Q40,40 130,40" fill="none" stroke="#333" stroke-width="2" stroke-dasharray="4"/><path d="M30,130 L50,130 L50,100 L75,80 L100,65 L130,60 L130,40 L30,40 Z" fill="#e2e8f0" stroke="#333"/><text x="10" y="80" font-size="12">D</text><text x="80" y="145" font-size="12">R</text></svg>`,
+    cotovelo: `<svg viewBox="0 0 200 150" width="180"><path d="M60,130 L120,130 L120,80 L80,40 L40,80 Z" fill="#e2e8f0" stroke="#333"/><text x="85" y="145" font-size="12">D</text><text x="35" y="110" font-size="12">h</text><path d="M120,80 A40,40 0 0 1 80,40" fill="none" stroke="red" stroke-width="1"/><text x="110" y="60" font-size="12">α</text></svg>`,
+    boca: `<svg viewBox="0 0 200 150" width="180"><rect x="40" y="80" width="120" height="50" fill="#e2e8f0" stroke="#333"/><rect x="80" y="30" width="40" height="50" fill="#cbd5e1" stroke="#333"/><text x="25" y="110" font-size="12">D</text><text x="95" y="25" font-size="12">d</text></svg>`
+};
+
+let currentMode = 'curva';
 
 function switchTab(mode) {
     currentMode = mode;
-    document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('app-title').innerText = event.target.innerText;
+    document.body.setAttribute('data-mode', mode);
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+    document.getElementById(`btn-${mode}`).classList.add('active');
+    
+    const titles = { curva: "Curva de Gomos", cotovelo: "Cotovelo", boca: "Boca de Lobo" };
+    document.getElementById('app-title').innerText = titles[mode];
+    document.getElementById('main-diagram').innerHTML = diagrams[mode];
+    document.getElementById('result-section').style.display = 'none';
 }
+
+// Inicializar
+switchTab('curva');
 
 function calcular() {
-    const D = parseFloat(document.getElementById('diam_D').value);
-    const d = parseFloat(document.getElementById('diam_d').value);
-    const h = parseFloat(document.getElementById('altura').value);
-    
-    if (!D || !d || !h) {
-        alert("Preencha os valores de D, d e h");
-        return;
-    }
+    const D = parseFloat(document.getElementById('val-D').value);
+    const div = parseInt(document.getElementById('val-div').value);
+    const resultSection = document.getElementById('result-section');
+    const table = document.getElementById('results-table');
 
-    const div = 12; // Padrão de 12 divisões para o gabarito
-    const R = D / 2;
-    const r = d / 2;
-    const P = Math.PI * d; // Perímetro
-    const A = P / div;    // Distância entre divisões
+    if (!D || !div) return alert("Preencha os dados básicos!");
 
-    let pontos = [];
-    let htmlResultados = `<div class="res-item"><b>P</b> = ${P.toFixed(2)}</div>`;
-    htmlResultados += `<div class="res-item"><b>A</b> = ${A.toFixed(2)}</div>`;
+    let alturas = [];
+    const perimetro = Math.PI * D;
+    const incremento = perimetro / div;
 
-    // Cálculo das ordenadas (alturas) para Boca de Lobo 90°
-    // Fórmula: y = h - (R - sqrt(R² - (r * sen(θ))²))
-    for (let i = 0; i <= div; i++) {
-        const anguloGraus = (360 / div) * i;
-        const rad = anguloGraus * (Math.PI / 180);
-        
-        const yBase = Math.sqrt(Math.pow(R, 2) - Math.pow(r * Math.sin(rad), 2));
-        const alturaPonto = h - (R - yBase);
-        pontos.push(alturaPonto);
-
-        // Apenas para mostrar do ponto 1 ao 7 (simetria) como na imagem
-        if (i <= 6) {
-            htmlResultados += `<div class="res-item"><b>${i + 1}</b> = ${alturaPonto.toFixed(2)}</div>`;
+    if (currentMode === 'boca') {
+        const d = parseFloat(document.getElementById('val-d').value);
+        const h = parseFloat(document.getElementById('val-h').value);
+        const R = D / 2;
+        const r = d / 2;
+        for (let i = 0; i <= div; i++) {
+            let ang = (360 / div) * i * (Math.PI / 180);
+            let y = h - (R - Math.sqrt(R * R - Math.pow(r * Math.sin(ang), 2)));
+            alturas.push(y);
+        }
+    } else {
+        // Lógica simplificada para Curva/Cotovelo
+        const angTotal = parseFloat(document.getElementById('val-a').value) || 90;
+        const rad = (angTotal / 2) * (Math.PI / 180);
+        for (let i = 0; i <= div; i++) {
+            let angDiv = (360 / div) * i * (Math.PI / 180);
+            let y = (D / 2) * Math.cos(angDiv) * Math.tan(rad) + (D/2);
+            alturas.push(y);
         }
     }
 
-    exibirDesenho(pontos, P, div);
-    document.getElementById('numerical-results').innerHTML = htmlResultados;
-    document.getElementById('result-container').style.display = 'block';
+    // Gerar Tabela
+    let html = `<div><b>P:</b> ${perimetro.toFixed(2)}</div><div><b>A:</b> ${incremento.toFixed(2)}</div>`;
+    alturas.forEach((alt, i) => {
+        if (i <= div/2) html += `<div><b>Pt ${i+1}:</b> ${alt.toFixed(2)}</div>`;
+    });
+    table.innerHTML = html;
+
+    // Gerar Gráfico de Planificação
+    gerarPlanificacao(alturas, perimetro, div);
+    resultSection.style.display = 'block';
 }
 
-function exibirDesenho(pontos, perimetro, div) {
-    const larguraImg = 350;
-    const alturaImg = 150;
-    const espacamentoX = larguraImg / div;
+function gerarPlanificacao(pontos, P, div) {
+    const w = 300, h = 120;
+    const step = w / div;
+    const maxVal = Math.max(...pontos);
+    const scale = 80 / maxVal;
+
+    let path = `M 0 ${h - pontos[0] * scale}`;
+    let labels = "";
     
-    // Encontrar escala para o desenho caber no SVG
-    const maxH = Math.max(...pontos);
-    const minH = Math.min(...pontos);
-    const escalaY = 60 / (maxH || 1); 
+    pontos.forEach((p, i) => {
+        let x = i * step;
+        let y = h - p * scale;
+        path += ` L ${x} ${y}`;
+        if (i % 2 === 0) labels += `<text x="${x}" y="${h+15}" font-size="8">${i+1}</text>`;
+    });
 
-    let pathD = `M 0 ${alturaImg - (pontos[0] * escalaY)}`;
-    let linhasVerticais = '';
-    let textos = '';
-
-    for (let i = 0; i <= div; i++) {
-        const x = i * espacamentoX;
-        const y = alturaImg - (pontos[i] * escalaY);
-        
-        pathD += ` L ${x} ${y}`;
-        
-        // Linhas verticais do gabarito
-        linhasVerticais += `<line x1="${x}" y1="${alturaImg}" x2="${x}" y2="${y}" stroke="#ccc" stroke-width="1" />`;
-        
-        // Números 1, 2, 3...
-        if (i <= 6) {
-            textos += `<text x="${x}" y="${alturaImg + 15}" font-size="10" text-anchor="middle">${i+1}</text>`;
-        }
-    }
-
-    const svgHTML = `
-        <svg viewBox="-10 -20 ${larguraImg + 20} ${alturaImg + 40}" width="100%">
-            <line x1="0" y1="${alturaImg}" x2="${larguraImg}" y2="${alturaImg}" stroke="black" stroke-width="2" />
-            <path d="${pathD}" fill="none" stroke="blue" stroke-width="2" />
-            ${linhasVerticais}
-            ${textos}
-            <text x="${larguraImg/2}" y="${alturaImg + 35}" font-size="12" text-anchor="middle" font-weight="bold">P = ${perimetro.toFixed(2)}</text>
-        </svg>
-    `;
-
-    document.getElementById('svg-area').innerHTML = svgHTML;
+    document.getElementById('plan-visual').innerHTML = `
+        <svg viewBox="0 -10 ${w} ${h+30}" width="100%">
+            <path d="${path}" fill="none" stroke="#3b82f6" stroke-width="2"/>
+            <line x1="0" y1="${h}" x2="${w}" y2="${h}" stroke="#333" />
+            ${labels}
+        </svg>`;
 }
-
