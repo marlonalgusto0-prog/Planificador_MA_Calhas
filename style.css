@@ -1,35 +1,43 @@
 :root {
-    --blue: #3b82f6;
-    --dark: #1e293b;
-    --gray: #f8fafc;
-    --border: #e2e8f0;
+    --primary: #4183f2;
+    --bg: #f8f9fa;
+    --text: #333;
+    --card-bg: #ffffff;
 }
 
-body { font-family: 'Inter', sans-serif; background: #cbd5e1; margin: 0; display: flex; justify-content: center; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+.container { width: 100%; max-width: 500px; margin: 0 auto; padding: 20px; box-sizing: border-box; }
 
-.app-container { width: 100%; max-width: 480px; background: white; min-height: 100vh; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+h1, h2 { color: #222; margin-left: 10px; }
+.category h2 { font-size: 1.1rem; color: #666; margin-top: 30px; }
 
-header { padding: 20px; border-bottom: 1px solid var(--border); background: white; sticky: top; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
 
-.tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-.tabs button { flex: 1; padding: 10px 5px; border: 1px solid var(--border); border-radius: 6px; background: var(--gray); cursor: pointer; font-size: 0.85rem; font-weight: 600; color: #64748b; transition: 0.3s; }
-.tabs button.active { background: var(--blue); color: white; border-color: var(--blue); }
+.card { 
+    background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; cursor: pointer;
+}
+.card:active { transform: scale(0.95); }
+.icon-box img { width: 60px; height: 60px; margin-bottom: 10px; }
+.card span { display: block; font-size: 0.9rem; font-weight: 500; }
 
-h1 { font-size: 1.25rem; color: var(--dark); margin: 0; }
+/* Tela de Cálculo */
+.nav-back { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+.nav-back button { background: none; border: none; font-size: 1rem; color: var(--primary); cursor: pointer; }
 
-.diagram-container { width: 100%; height: 200px; display: flex; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
+.diagram-area { 
+    background: white; border-radius: 12px; height: 220px; margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center; border: 1px solid #eee;
+}
 
-.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px; }
-.input-group { border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; display: flex; flex-direction: column; }
-.input-group label { font-size: 0.7rem; color: #94a3b8; font-weight: bold; text-transform: uppercase; }
-.input-group input { border: none; font-size: 1rem; outline: none; padding-top: 4px; color: var(--dark); font-weight: 600; }
+.input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.field { border: 1px solid #ddd; border-radius: 8px; padding: 8px 12px; background: white; }
+.field label { font-size: 0.75rem; color: #888; display: block; font-weight: bold; }
+.field input { border: none; width: 100%; font-size: 1.1rem; outline: none; margin-top: 4px; }
 
-.btn-calculate { width: calc(100% - 40px); margin: 0 20px 20px; padding: 16px; background: var(--blue); color: white; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5); }
+.btn-main { 
+    width: 100%; padding: 16px; background: var(--primary); color: white; border: none;
+    border-radius: 10px; font-weight: bold; margin-top: 25px; cursor: pointer;
+}
 
-/* Lógica de exibição de campos */
-[data-mode="curva"] #group-h, [data-mode="curva"] #group-d { display: none; }
-[data-mode="cotovelo"] #group-R, [data-mode="cotovelo"] #group-gomos, [data-mode="cotovelo"] #group-d { display: none; }
-[data-mode="boca"] #group-R, [data-mode="boca"] #group-gomos, [data-mode="boca"] #group-a { display: none; }
-
-.results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 20px; background: #f1f5f9; margin: 20px; border-radius: 8px; font-family: monospace; }
-.plan-svg { padding: 10px; }
+.result-area { margin-top: 20px; background: white; padding: 15px; border-radius: 10px; }
